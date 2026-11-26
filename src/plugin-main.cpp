@@ -33,6 +33,7 @@ the Free Software Foundation; either version 2 of the License, or
 #include <QPixmap>
 #include <QPointer>
 #include <QPushButton>
+#include <QSlider>
 #include <QTimer>
 #include <QVBoxLayout>
 
@@ -62,6 +63,8 @@ struct Settings {
 	QHash<QString, QString> names; // UUID -> zuletzt bekannter Name (Fallback)
 	bool tintName = false;
 	bool tintStripe = true;
+	bool tintColumn = true;
+	int columnOpacity = 35; // Prozent
 };
 
 Settings g_settings;
@@ -98,6 +101,10 @@ void loadSettings()
 	obs_data_set_default_bool(data, "tint_stripe", true);
 	g_settings.tintName = obs_data_get_bool(data, "tint_name");
 	g_settings.tintStripe = obs_data_get_bool(data, "tint_stripe");
+	obs_data_set_default_bool(data, "tint_column", true);
+	obs_data_set_default_int(data, "column_opacity", 35);
+	g_settings.tintColumn = obs_data_get_bool(data, "tint_column");
+	g_settings.columnOpacity = (int)obs_data_get_int(data, "column_opacity");
 
 	obs_data_array_t *arr = obs_data_get_array(data, "colors");
 	size_t count = obs_data_array_count(arr);
@@ -125,6 +132,8 @@ void saveSettings()
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "tint_name", g_settings.tintName);
 	obs_data_set_bool(data, "tint_stripe", g_settings.tintStripe);
+	obs_data_set_bool(data, "tint_column", g_settings.tintColumn);
+	obs_data_set_int(data, "column_opacity", g_settings.columnOpacity);
 
 	obs_data_array_t *arr = obs_data_array_create();
 	for (auto it = g_settings.colors.constBegin(); it != g_settings.colors.constEnd(); ++it) {
@@ -257,15 +266,32 @@ QDockWidget *mixerDock()
 
 void styleControl(QWidget *vc, const QColor &color)
 {
-	QString key = color.isValid()
-			      ? color.name() + (g_settings.tintName ? "n" : "") + (g_settings.tintStripe ? "s" : "")
-			      : QString();
+	QString key =
+		color.isValid()
+			? color.name() + (g_settings.tintName ? "n" : "") + (g_settings.tintStripe ? "s" : "") +
+				  (g_settings.tintColumn ? QString("c%1").arg(g_settings.columnOpacity) : QString())
+			: QString();
 	if (vc->property(kAppliedProp).toString() == key)
 		return;
 	vc->setProperty(kAppliedProp, key);
 
 	QString hex = color.name();
 	QString text = contrastText(color).name();
+
+	// Ganze Spalte einfärben (halbtransparent, damit der Pegel lesbar bleibt)
+	if (color.isValid() && g_settings.tintColumn) {
+		QColor bg = color;
+		bg.setAlpha(qBound(0, g_settings.columnOpacity, 100) * 255 / 100);
+		vc->setStyleSheet(QString("VolumeControl { background: rgba(%1, %2, %3, %4); border: 1px solid %5; "
+					  "border-radius: 4px; }")
+					  .arg(bg.red())
+					  .arg(bg.green())
+					  .arg(bg.blue())
+					  .arg(bg.alpha())
+					  .arg(hex));
+	} else {
+		vc->setStyleSheet(QString());
+	}
 
 	for (QLabel *label : vc->findChildren<QLabel *>()) {
 		const QString cls = label->property("class").toString();
@@ -517,6 +543,20 @@ void openSettingsDialog()
 	stripeBox->setChecked(g_settings.tintStripe);
 	layout->addWidget(stripeBox);
 
+	auto *columnBox = new QCheckBox("Ganze Spalte einfärben");
+	columnBox->setChecked(g_settings.tintColumn);
+	layout->addWidget(columnBox);
+
+	auto *opacityRow = new QHBoxLayout();
+	auto *opacityLabel = new QLabel(QString("Stärke: %1 %").arg(g_settings.columnOpacity));
+	auto *opacitySlider = new QSlider(Qt::Horizontal);
+	opacitySlider->setRange(5, 100);
+	opacitySlider->setValue(g_settings.columnOpacity);
+	opacitySlider->setEnabled(g_settings.tintColumn);
+	opacityRow->addWidget(opacityLabel);
+	opacityRow->addWidget(opacitySlider, 1);
+	layout->addLayout(opacityRow);
+
 	auto *nameBox = new QCheckBox("Quellennamen ebenfalls einfärben");
 	nameBox->setChecked(g_settings.tintName);
 	layout->addWidget(nameBox);
@@ -547,6 +587,18 @@ void openSettingsDialog()
 	});
 	QObject::connect(stripeBox, &QCheckBox::toggled, [](bool on) {
 		g_settings.tintStripe = on;
+		saveSettings();
+		forceReapply();
+	});
+	QObject::connect(columnBox, &QCheckBox::toggled, [opacitySlider](bool on) {
+		g_settings.tintColumn = on;
+		opacitySlider->setEnabled(on);
+		saveSettings();
+		forceReapply();
+	});
+	QObject::connect(opacitySlider, &QSlider::valueChanged, [opacityLabel](int v) {
+		g_settings.columnOpacity = v;
+		opacityLabel->setText(QString("Stärke: %1 %").arg(v));
 		saveSettings();
 		forceReapply();
 	});
