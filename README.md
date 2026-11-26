@@ -21,6 +21,7 @@ Discord, Spiel, Mikro, Musik: Im OBS-Mixer sieht jeder Kanal gleich aus. **Chrom
 - 🎨 **Eine Farbe pro Quelle**: Kopfleiste, ganze Spalte oder nur ein Streifen, wie du willst
 - 🖱️ **Rechtsklick auf einen Kanal → Farbe**: 12 Vorschläge oder jede eigene Farbe
 - 🎚️ **Einstellbare Stärke**: von dezent bis voll gesättigt
+- 🔇 **Stummgeschaltet = abgedunkelt**: Ein gemuteter Kanal wird automatisch dunkler
 - 🏷️ **Optional farbige Quellennamen**
 - 🔁 **Übersteht Umbenennen**: Die Farbe hängt an der Quelle selbst, nicht am Namen
 - 🌍 Oberfläche auf **Deutsch & Englisch**

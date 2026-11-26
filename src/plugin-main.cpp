@@ -66,6 +66,7 @@ struct Settings {
 	bool tintName = false;
 	bool tintStripe = true;
 	bool tintColumn = true;
+	bool dimMuted = true;
 	int columnOpacity = 35; // Prozent
 };
 
@@ -126,6 +127,8 @@ void loadSettings()
 	obs_data_set_default_bool(data, "tint_column", true);
 	obs_data_set_default_int(data, "column_opacity", 35);
 	g_settings.tintColumn = obs_data_get_bool(data, "tint_column");
+	obs_data_set_default_bool(data, "dim_muted", true);
+	g_settings.dimMuted = obs_data_get_bool(data, "dim_muted");
 	g_settings.columnOpacity = (int)obs_data_get_int(data, "column_opacity");
 
 	obs_data_array_t *arr = obs_data_get_array(data, "colors");
@@ -155,6 +158,7 @@ void saveSettings()
 	obs_data_set_bool(data, "tint_name", g_settings.tintName);
 	obs_data_set_bool(data, "tint_stripe", g_settings.tintStripe);
 	obs_data_set_bool(data, "tint_column", g_settings.tintColumn);
+	obs_data_set_bool(data, "dim_muted", g_settings.dimMuted);
 	obs_data_set_int(data, "column_opacity", g_settings.columnOpacity);
 
 	obs_data_array_t *arr = obs_data_array_create();
@@ -286,8 +290,44 @@ QDockWidget *mixerDock()
 	return main->findChild<QDockWidget *>("mixerDock");
 }
 
-void styleControl(QWidget *vc, const QColor &color)
+void styleControl(QWidget *vc, const QColor &color);
+void applyColors();
+
+/* Stummschalt-Button des Kanals (Klasse "btn-mute") */
+QPushButton *muteButtonOf(QWidget *vc)
 {
+	for (QPushButton *btn : vc->findChildren<QPushButton *>()) {
+		if (btn->property("class").toString().split(' ').contains("btn-mute"))
+			return btn;
+	}
+	return nullptr;
+}
+
+/* Abgedunkelte, entsättigte Variante für stummgeschaltete Kanäle */
+QColor mutedColor(const QColor &c)
+{
+	QColor hsv = c.toHsv();
+	int h = hsv.hsvHue();
+	int sat = hsv.hsvSaturation() * 45 / 100;
+	int val = hsv.value() * 40 / 100;
+	return QColor::fromHsv(h < 0 ? 0 : h, sat, val);
+}
+
+void styleControl(QWidget *vc, const QColor &baseColor)
+{
+	QPushButton *muteBtn = muteButtonOf(vc);
+	if (muteBtn && !muteBtn->property("chromamixHooked").toBool()) {
+		// Beim Stummschalten sofort neu einfärben statt auf den Timer zu warten
+		muteBtn->setProperty("chromamixHooked", true);
+		QPointer<QWidget> guard(vc);
+		QObject::connect(muteBtn, &QAbstractButton::toggled, muteBtn, [guard](bool) {
+			if (guard)
+				QTimer::singleShot(0, []() { applyColors(); });
+		});
+	}
+	bool muted = muteBtn && muteBtn->isChecked();
+	QColor color = (baseColor.isValid() && muted && g_settings.dimMuted) ? mutedColor(baseColor) : baseColor;
+
 	QString key =
 		color.isValid()
 			? color.name() + (g_settings.tintName ? "n" : "") + (g_settings.tintStripe ? "s" : "") +
@@ -578,6 +618,10 @@ void openSettingsDialog()
 	opacityRow->addWidget(opacitySlider, 1);
 	layout->addLayout(opacityRow);
 
+	auto *dimBox = new QCheckBox(T("DimMutedOption"));
+	dimBox->setChecked(g_settings.dimMuted);
+	layout->addWidget(dimBox);
+
 	auto *nameBox = new QCheckBox(T("NameOption"));
 	nameBox->setChecked(g_settings.tintName);
 	layout->addWidget(nameBox);
@@ -620,6 +664,11 @@ void openSettingsDialog()
 	QObject::connect(opacitySlider, &QSlider::valueChanged, [opacityLabel](int v) {
 		g_settings.columnOpacity = v;
 		opacityLabel->setText(T("Intensity").arg(v));
+		saveSettings();
+		forceReapply();
+	});
+	QObject::connect(dimBox, &QCheckBox::toggled, [](bool on) {
+		g_settings.dimMuted = on;
 		saveSettings();
 		forceReapply();
 	});

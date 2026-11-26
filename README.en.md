@@ -21,6 +21,7 @@ Discord, game, mic, music – in the OBS mixer every channel looks the same. **C
 - 🎨 **One color per source**: the channel header, the whole channel or just a stripe, your choice
 - 🖱️ **Right-click a channel → Color**: 12 presets or any custom color
 - 🎚️ **Adjustable intensity**: from a subtle tint to fully saturated
+- 🔇 **Muted = dimmed**: muted channels automatically turn darker
 - 🏷️ **Optional colored source names**
 - 🔁 **Survives renaming**: colors are linked to the source itself, not its name
 - 🌍 **English & German** interface
