@@ -1,6 +1,7 @@
 /*
 ChromaMix for OBS
-Färbt die Kanäle im OBS-Audiomixer pro Quelle ein.
+Copyright (C) 2026 7felixmoon
+https://github.com/7felixmoon/ChromaMix
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -54,7 +54,9 @@ The project is based on the official [obs-plugintemplate](https://github.com/obs
 
 ## License
 
-[GPL-2.0](LICENSE) – like OBS Studio itself.
+Copyright © 2026 7felixmoon
+
+The source code is licensed under the [GPL-2.0](LICENSE), like OBS Studio itself. The **ChromaMix** name, logo and banner are excluded. All rights reserved. See [NOTICE](NOTICE.md).
 
 ---
 
