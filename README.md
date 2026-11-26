@@ -2,9 +2,9 @@
   <img src="docs/banner.jpg" alt="ChromaMix – Never mute the wrong mic again." width="100%">
 </p>
 
-<p align="center"><b>English</b> · <a href="README.de.md">Deutsch</a></p>
+<p align="center"><b>Deutsch</b> · <a href="README.en.md">English</a></p>
 
-<h3 align="center">Color-code your OBS audio mixer.</h3>
+<h3 align="center">Bring Farbe in deinen OBS-Audiomixer.</h3>
 
 <p align="center">
   <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/7felixmoon/obs-mixer-colors?label=download&style=for-the-badge" alt="Download"></a>
@@ -14,47 +14,47 @@
 
 ---
 
-Discord, game, mic, music – in the OBS mixer every channel looks the same. **ChromaMix** gives each audio source its own color, so you can tell them apart at a glance while you're live.
+Discord, Spiel, Mikro, Musik: Im OBS-Mixer sieht jeder Kanal gleich aus. **ChromaMix** gibt jeder Audioquelle ihre eigene Farbe, damit du sie auch mitten im Stream auf einen Blick auseinanderhältst.
 
-## Features
+## Funktionen
 
-- 🎨 **One color per source**: the channel header, the whole channel or just a stripe, your choice
-- 🖱️ **Right-click a channel → Color**: 12 presets or any custom color
-- 🎚️ **Adjustable intensity**: from a subtle tint to fully saturated
-- 🏷️ **Optional colored source names**
-- 🔁 **Survives renaming**: colors are linked to the source itself, not its name
-- 🌍 **English & German** interface
+- 🎨 **Eine Farbe pro Quelle**: Kopfleiste, ganze Spalte oder nur ein Streifen, wie du willst
+- 🖱️ **Rechtsklick auf einen Kanal → Farbe**: 12 Vorschläge oder jede eigene Farbe
+- 🎚️ **Einstellbare Stärke**: von dezent bis voll gesättigt
+- 🏷️ **Optional farbige Quellennamen**
+- 🔁 **Übersteht Umbenennen**: Die Farbe hängt an der Quelle selbst, nicht am Namen
+- 🌍 Oberfläche auf **Deutsch & Englisch**
 
 ## Installation
 
-1. Download the latest `chromamix-…-windows-x64.zip` from [**Releases**](../../releases/latest).
-2. Close OBS.
-3. Extract the zip and copy the `chromamix` folder to
+1. Die neueste `chromamix-…-windows-x64.zip` unter [**Releases**](../../releases/latest) herunterladen.
+2. OBS schließen.
+3. Die ZIP entpacken und den Ordner `chromamix` nach
    `C:\ProgramData\obs-studio\plugins\`
-   (create the `plugins` folder if it doesn't exist).
-4. Start OBS.
+   kopieren (den Ordner `plugins` ggf. anlegen).
+4. OBS starten.
 
-The result should look like this:
+So sollte es am Ende aussehen:
 `C:\ProgramData\obs-studio\plugins\chromamix\bin\64bit\chromamix.dll`
 
-## Usage
+## Benutzung
 
-- **Right-click** any channel in the audio mixer → **Color**
-- Or open **Tools → ChromaMix** for an overview of all audio sources and the display options
+- **Rechtsklick** auf einen Kanal im Audiomixer → **Farbe**
+- Oder **Tools → ChromaMix** öffnen: Übersicht aller Audioquellen und Anzeige-Optionen
 
-## Compatibility
+## Kompatibilität
 
-Built and tested for **OBS Studio 33** on Windows.
+Gebaut und getestet für **OBS Studio 33** unter Windows.
 
-OBS has no official API for styling the audio mixer, so ChromaMix hooks into the mixer's interface directly. A future OBS update that redesigns the mixer may break it. If that happens, please [open an issue](../../issues).
+OBS bietet keine offizielle Schnittstelle, um den Mixer zu gestalten. ChromaMix klinkt sich deshalb direkt in die Mixer-Oberfläche ein. Ein späteres OBS-Update, das den Mixer umbaut, kann das Plugin brechen. Falls das passiert, [erstell gern ein Issue](../../issues).
 
-## Building from source
+## Selbst bauen
 
-The project is based on the official [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Every push builds the Windows version automatically via GitHub Actions. Pushing a version tag (e.g. `1.2.0`) creates a release.
+Das Projekt basiert auf dem offiziellen [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Jeder Push baut die Windows-Version automatisch über GitHub Actions. Ein Versions-Tag (z. B. `1.2.0`) erstellt ein Release.
 
-## License
+## Lizenz
 
-[GPL-2.0](LICENSE) – like OBS Studio itself.
+[GPL-2.0](LICENSE), genau wie OBS Studio selbst.
 
 ---
 
