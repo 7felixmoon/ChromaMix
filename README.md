@@ -50,7 +50,7 @@ OBS bietet keine offizielle Schnittstelle, um den Mixer zu gestalten. ChromaMix 
 
 ## Selbst bauen
 
-Das Projekt basiert auf dem offiziellen [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Jeder Push baut die Windows-Version automatisch über GitHub Actions. Ein Versions-Tag (z. B. `1.2.0`) erstellt ein Release.
+Das Projekt basiert auf dem offiziellen [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Jeder Push baut die Windows-Version automatisch über GitHub Actions. Ein Versions-Tag (z. B. `1.1.0`) erstellt ein Release.
 
 ## Lizenz
 
