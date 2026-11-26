@@ -7,7 +7,7 @@
 <h3 align="center">Color-code your OBS audio mixer.</h3>
 
 <p align="center">
-  <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/7felixmoon/obs-mixer-colors?label=download&style=for-the-badge" alt="Download"></a>
+  <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/7felixmoon/ChromaMix?label=download&style=for-the-badge" alt="Download"></a>
   <img src="https://img.shields.io/badge/OBS-33-302E31?style=for-the-badge&logo=obsstudio&logoColor=white" alt="OBS 33">
   <img src="https://img.shields.io/badge/Windows-x64-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows x64">
 </p>
