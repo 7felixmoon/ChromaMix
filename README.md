@@ -2,6 +2,8 @@
   <img src="docs/banner.jpg" alt="ChromaMix – Never mute the wrong mic again." width="100%">
 </p>
 
+<p align="center"><b>English</b> · <a href="README.de.md">Deutsch</a></p>
+
 <h3 align="center">Color-code your OBS audio mixer.</h3>
 
 <p align="center">
