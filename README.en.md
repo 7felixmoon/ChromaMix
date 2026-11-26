@@ -50,7 +50,7 @@ OBS has no official API for styling the audio mixer, so ChromaMix hooks into the
 
 ## Building from source
 
-The project is based on the official [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Every push builds the Windows version automatically via GitHub Actions. Pushing a version tag (e.g. `1.1.0`) creates a release.
+The project is based on the official [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Every push builds the Windows version automatically via GitHub Actions. Pushing a version tag (e.g. `1.0.0`) creates a release.
 
 ## License
 
