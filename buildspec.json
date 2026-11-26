@@ -33,13 +33,13 @@
     },
     "platformConfig": {
         "macos": {
-            "bundleId": "com.7felixmoon.obs-mixer-colors"
+            "bundleId": "com.7felixmoon.chromamix"
         }
     },
-    "name": "obs-mixer-colors",
-    "displayName": "Mixer Colors",
-    "version": "1.1.0",
+    "name": "chromamix",
+    "displayName": "ChromaMix",
+    "version": "1.2.0",
     "author": "7felixmoon",
-    "website": "https://github.com",
+    "website": "https://github.com/7felixmoon/obs-mixer-colors",
     "email": ""
 }

@@ -1,5 +1,5 @@
 /*
-Mixer Colors for OBS
+ChromaMix for OBS
 Färbt die Kanäle im OBS-Audiomixer pro Quelle ein.
 
 This program is free software; you can redistribute it and/or modify
@@ -38,6 +38,7 @@ the Free Software Foundation; either version 2 of the License, or
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <cstring>
 #include <set>
 #include <string>
 #include <vector>
@@ -49,7 +50,7 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 MODULE_EXPORT const char *obs_module_description(void)
 {
-	return "Farbige Kanaele im Audiomixer";
+	return obs_module_text("Description");
 }
 
 namespace {
@@ -74,6 +75,25 @@ QString g_lastClickedName;
 
 const char *kAppliedProp = "mixerColorsApplied";
 
+QString T(const char *key)
+{
+	return QString::fromUtf8(obs_module_text(key));
+}
+
+/* Übernimmt Farben aus der alten Version (Plugin hieß "obs-mixer-colors") */
+void migrateOldConfig(const std::string &newPath)
+{
+	if (newPath.empty() || os_file_exists(newPath.c_str()))
+		return;
+	std::string oldPath = newPath;
+	size_t pos = oldPath.rfind("chromamix");
+	if (pos == std::string::npos)
+		return;
+	oldPath.replace(pos, strlen("chromamix"), "obs-mixer-colors");
+	if (os_file_exists(oldPath.c_str()))
+		os_copyfile(oldPath.c_str(), newPath.c_str());
+}
+
 std::string configFile()
 {
 	char *dir = obs_module_config_path("");
@@ -84,6 +104,7 @@ std::string configFile()
 	char *path = obs_module_config_path("colors.json");
 	std::string result = path ? path : "";
 	bfree(path);
+	migrateOldConfig(result);
 	return result;
 }
 
@@ -407,7 +428,7 @@ void setColor(const QString &uuid, const QString &name, const QColor &color)
 QColor pickColor(const QColor &initial, QWidget *parent, const QString &name)
 {
 	QColorDialog dlg(initial.isValid() ? initial : presetColors().at(5), parent);
-	dlg.setWindowTitle(QString("Farbe für „%1“").arg(name));
+	dlg.setWindowTitle(T("PickTitle").arg(name));
 	for (int i = 0; i < presetColors().size() && i < QColorDialog::customCount(); i++)
 		QColorDialog::setCustomColor(i, presetColors().at(i));
 	if (dlg.exec() != QDialog::Accepted)
@@ -426,7 +447,7 @@ void addColorMenu(QMenu *menu, const QString &name)
 	if (uuid.isEmpty())
 		return;
 
-	QMenu *sub = new QMenu("Farbe", menu);
+	QMenu *sub = new QMenu(T("ColorMenu"), menu);
 	QColor current = g_settings.colors.value(uuid);
 	sub->setIcon(swatch(current));
 
@@ -435,13 +456,13 @@ void addColorMenu(QMenu *menu, const QString &name)
 		QObject::connect(a, &QAction::triggered, [uuid, name, c]() { setColor(uuid, name, c); });
 	}
 	sub->addSeparator();
-	QAction *custom = sub->addAction("Eigene Farbe…");
+	QAction *custom = sub->addAction(T("CustomColor"));
 	QObject::connect(custom, &QAction::triggered, [uuid, name, current]() {
 		QColor c = pickColor(current, static_cast<QWidget *>(obs_frontend_get_main_window()), name);
 		if (c.isValid())
 			setColor(uuid, name, c);
 	});
-	QAction *reset = sub->addAction("Farbe entfernen");
+	QAction *reset = sub->addAction(T("RemoveColor"));
 	reset->setEnabled(current.isValid());
 	QObject::connect(reset, &QAction::triggered, [uuid, name]() { setColor(uuid, name, QColor()); });
 
@@ -497,7 +518,7 @@ private:
 QPointer<MenuWatcher> g_watcher;
 
 /* ------------------------------------------------------------------ */
-/* Einstellungsfenster (Tools -> Mixer-Farben)                          */
+/* Einstellungsfenster (Tools -> ChromaMix)                             */
 /* ------------------------------------------------------------------ */
 
 void openSettingsDialog()
@@ -505,12 +526,11 @@ void openSettingsDialog()
 	auto *main = static_cast<QWidget *>(obs_frontend_get_main_window());
 
 	QDialog dlg(main);
-	dlg.setWindowTitle("Mixer-Farben");
+	dlg.setWindowTitle("ChromaMix");
 	dlg.resize(380, 440);
 
 	auto *layout = new QVBoxLayout(&dlg);
-	auto *hint = new QLabel("Doppelklick auf eine Quelle, um ihre Farbe zu ändern. "
-				"Tipp: Rechtsklick auf einen Kanal im Mixer geht auch.");
+	auto *hint = new QLabel(T("DialogHint"));
 	hint->setWordWrap(true);
 	layout->addWidget(hint);
 
@@ -532,23 +552,23 @@ void openSettingsDialog()
 	refill();
 
 	auto *btnRow = new QHBoxLayout();
-	auto *pickBtn = new QPushButton("Farbe wählen…");
-	auto *clearBtn = new QPushButton("Entfernen");
+	auto *pickBtn = new QPushButton(T("PickButton"));
+	auto *clearBtn = new QPushButton(T("ClearButton"));
 	btnRow->addWidget(pickBtn);
 	btnRow->addWidget(clearBtn);
 	btnRow->addStretch();
 	layout->addLayout(btnRow);
 
-	auto *stripeBox = new QCheckBox("Farbigen Streifen unter dem Pegel anzeigen");
+	auto *stripeBox = new QCheckBox(T("StripeOption"));
 	stripeBox->setChecked(g_settings.tintStripe);
 	layout->addWidget(stripeBox);
 
-	auto *columnBox = new QCheckBox("Ganze Spalte einfärben");
+	auto *columnBox = new QCheckBox(T("ColumnOption"));
 	columnBox->setChecked(g_settings.tintColumn);
 	layout->addWidget(columnBox);
 
 	auto *opacityRow = new QHBoxLayout();
-	auto *opacityLabel = new QLabel(QString("Stärke: %1 %").arg(g_settings.columnOpacity));
+	auto *opacityLabel = new QLabel(T("Intensity").arg(g_settings.columnOpacity));
 	auto *opacitySlider = new QSlider(Qt::Horizontal);
 	opacitySlider->setRange(5, 100);
 	opacitySlider->setValue(g_settings.columnOpacity);
@@ -557,7 +577,7 @@ void openSettingsDialog()
 	opacityRow->addWidget(opacitySlider, 1);
 	layout->addLayout(opacityRow);
 
-	auto *nameBox = new QCheckBox("Quellennamen ebenfalls einfärben");
+	auto *nameBox = new QCheckBox(T("NameOption"));
 	nameBox->setChecked(g_settings.tintName);
 	layout->addWidget(nameBox);
 
@@ -598,7 +618,7 @@ void openSettingsDialog()
 	});
 	QObject::connect(opacitySlider, &QSlider::valueChanged, [opacityLabel](int v) {
 		g_settings.columnOpacity = v;
-		opacityLabel->setText(QString("Stärke: %1 %").arg(v));
+		opacityLabel->setText(T("Intensity").arg(v));
 		saveSettings();
 		forceReapply();
 	});
@@ -649,7 +669,7 @@ bool obs_module_load(void)
 {
 	loadSettings();
 
-	QAction *action = static_cast<QAction *>(obs_frontend_add_tools_menu_qaction("Mixer-Farben"));
+	QAction *action = static_cast<QAction *>(obs_frontend_add_tools_menu_qaction("ChromaMix"));
 	QObject::connect(action, &QAction::triggered, []() { openSettingsDialog(); });
 
 	obs_frontend_add_event_callback(onFrontendEvent, nullptr);

@@ -1,33 +1,59 @@
-# Mixer Colors für OBS
+<p align="center">
+  <img src="docs/banner.jpg" alt="ChromaMix – Never mute the wrong mic again." width="100%">
+</p>
 
-Färbt die Kanäle im OBS-Audiomixer pro Quelle ein: farbige Kopfleiste (statt „Global“-Blau), optional ein farbiger Streifen unter dem Pegel und farbige Quellennamen.
+<h3 align="center">Color-code your OBS audio mixer.</h3>
 
-Gebaut und abgestimmt auf **OBS 33.0.3** (Windows).
+<p align="center">
+  <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/7felixmoon/obs-mixer-colors?label=download&style=for-the-badge" alt="Download"></a>
+  <img src="https://img.shields.io/badge/OBS-33-302E31?style=for-the-badge&logo=obsstudio&logoColor=white" alt="OBS 33">
+  <img src="https://img.shields.io/badge/Windows-x64-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows x64">
+</p>
 
-## Bedienung
+---
 
-- **Rechtsklick auf einen Kanal im Mixer → Farbe**: Vorschlagsfarbe wählen, eigene Farbe oder Farbe entfernen.
-- **Tools → Mixer-Farben**: Übersicht aller Audioquellen, Farben ändern, Optionen für Streifen und Namensfarbe.
+Discord, game, mic, music – in the OBS mixer every channel looks the same. **ChromaMix** gives each audio source its own color, so you can tell them apart at a glance while you're live.
 
-Die Farben hängen an der Quelle selbst (UUID), Umbenennen ist also kein Problem.
-Gespeichert wird in `%APPDATA%\obs-studio\plugin_config\obs-mixer-colors\colors.json`.
+## Features
 
-## Windows-Build über GitHub (ohne Visual Studio)
-
-1. Auf github.com ein neues Repository anlegen, z. B. `obs-mixer-colors`.
-2. Den kompletten Inhalt dieses Ordners hochladen (inklusive des versteckten Ordners `.github`).
-3. Im Repository auf **Actions** gehen. Der Build „Push“ startet automatisch (ca. 5–10 Minuten).
-4. Wenn er grün ist: den Lauf öffnen und unten unter **Artifacts** die Datei `obs-mixer-colors-1.0.0-windows-x64-…` herunterladen.
+- 🎨 **One color per source**: the channel header, the whole channel or just a stripe, your choice
+- 🖱️ **Right-click a channel → Color**: 12 presets or any custom color
+- 🎚️ **Adjustable intensity**: from a subtle tint to fully saturated
+- 🏷️ **Optional colored source names**
+- 🔁 **Survives renaming**: colors are linked to the source itself, not its name
+- 🌍 **English & German** interface
 
 ## Installation
 
-1. OBS schließen.
-2. Das heruntergeladene Artifact entpacken. Darin liegt eine ZIP mit dem Ordner `obs-mixer-colors`.
-3. Diesen Ordner nach `C:\ProgramData\obs-studio\plugins\` kopieren (Ordner `plugins` ggf. anlegen).
-   Ergebnis: `C:\ProgramData\obs-studio\plugins\obs-mixer-colors\bin\64bit\obs-mixer-colors.dll`
-4. OBS starten.
+1. Download the latest `chromamix-…-windows-x64.zip` from [**Releases**](../../releases/latest).
+2. Close OBS.
+3. Extract the zip and copy the `chromamix` folder to
+   `C:\ProgramData\obs-studio\plugins\`
+   (create the `plugins` folder if it doesn't exist).
+4. Start OBS.
 
-## Hinweis
+The result should look like this:
+`C:\ProgramData\obs-studio\plugins\chromamix\bin\64bit\chromamix.dll`
 
-OBS hat keine offizielle Schnittstelle zum Umfärben des Mixers. Das Plugin klinkt sich direkt in die Oberfläche ein.
-Ein späteres OBS-Update, das den Mixer umbaut, kann es daher brechen. Dann wird es angepasst.
+## Usage
+
+- **Right-click** any channel in the audio mixer → **Color**
+- Or open **Tools → ChromaMix** for an overview of all audio sources and the display options
+
+## Compatibility
+
+Built and tested for **OBS Studio 33** on Windows.
+
+OBS has no official API for styling the audio mixer, so ChromaMix hooks into the mixer's interface directly. A future OBS update that redesigns the mixer may break it. If that happens, please [open an issue](../../issues).
+
+## Building from source
+
+The project is based on the official [obs-plugintemplate](https://github.com/obsproject/obs-plugintemplate). Every push builds the Windows version automatically via GitHub Actions. Pushing a version tag (e.g. `1.2.0`) creates a release.
+
+## License
+
+[GPL-2.0](LICENSE) – like OBS Studio itself.
+
+---
+
+<p align="center">Made by <b>7felixmoon</b></p>
