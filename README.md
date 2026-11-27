@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.jpg" alt="ChromaMix – Never mute the wrong mixer again." width="100%">
+  <img src="docs/banner.jpg" alt="ChromaMix – Never mute the wrong mic again." width="100%">
 </p>
 
 <p align="center"><b>Deutsch</b> · <a href="README.en.md">English</a></p>
